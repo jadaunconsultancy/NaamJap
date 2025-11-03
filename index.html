@@ -17,6 +17,7 @@
     color: #4a2c2a;
     background: linear-gradient(135deg, #fff7fb, #ffe3ef);
     transition: background 2s ease;
+    text-align: center;
   }
 
   body.morning { background: linear-gradient(135deg, #fff7e6, #ffd6e8); }
@@ -25,15 +26,16 @@
 
   h1 {
     color: #d81b60;
-    font-size: 2em;
+    font-size: clamp(1.4em, 3vw, 2em);
     text-shadow: 0 0 15px #ff80c1;
+    margin: 10px;
   }
 
   .mala {
     position: relative;
-    width: 340px;
-    height: 340px;
-    margin-top: 40px;
+    width: min(80vw, 340px);
+    height: min(80vw, 340px);
+    margin-top: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -42,8 +44,8 @@
 
   .aura {
     position: absolute;
-    width: 280px;
-    height: 280px;
+    width: 80%;
+    height: 80%;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,221,241,0.5), rgba(255,204,230,0.2), transparent);
     animation: auraPulse 3s ease-in-out infinite alternate;
@@ -56,8 +58,8 @@
 
   .chakra {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 45%;
+    height: 45%;
     border: 2px solid rgba(255,180,220,0.3);
     border-radius: 50%;
     animation: rotateChakra 10s linear infinite;
@@ -70,8 +72,8 @@
 
   .bead {
     position: absolute;
-    width: 28px;
-    height: 28px;
+    width: 7%;
+    height: 7%;
     background: #f8e1ec;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(255, 182, 193, 0.3);
@@ -86,8 +88,8 @@
 
   .center {
     position: absolute;
-    width: 130px;
-    height: 130px;
+    width: 38%;
+    height: 38%;
     border-radius: 50%;
     background: radial-gradient(circle, #fff8fc, #ffe3ef);
     box-shadow: 0 0 30px rgba(255, 200, 220, 0.5);
@@ -98,13 +100,18 @@
     z-index: 2;
   }
 
-  .count { font-size: 2.6em; color: #c2185b; font-weight: bold; text-shadow: 0 0 12px #ffb6d9; }
+  .count { 
+    font-size: clamp(1.8em, 5vw, 2.6em);
+    color: #c2185b;
+    font-weight: bold;
+    text-shadow: 0 0 12px #ffb6d9;
+  }
 
   .btn {
     background: linear-gradient(135deg, #e91e63, #f06292);
     border: none;
     color: white;
-    font-size: 1em;
+    font-size: clamp(0.9em, 3vw, 1em);
     border-radius: 10px;
     padding: 10px 20px;
     margin-top: 10px;
@@ -117,15 +124,16 @@
 
   .stats {
     margin-top: 25px;
-    font-size: 1em;
+    font-size: clamp(0.9em, 2.5vw, 1em);
     text-align: center;
+    padding: 0 10px;
   }
 
   .highlight { color: #d81b60; font-weight: bold; }
 
   .floating {
     position: absolute;
-    font-size: 1.5em;
+    font-size: 1.2em;
     color: #d81b60;
     opacity: 0;
     animation: floatUp 3s ease-out forwards;
@@ -136,7 +144,6 @@
     100% { transform: translateY(-150px); opacity: 0; }
   }
 
-  /* Achievement Popup */
   .achievement {
     position: fixed;
     top: 40%;
@@ -144,19 +151,24 @@
     transform: translate(-50%, -50%) scale(0.8);
     background: radial-gradient(circle, #fff0f6, #ffd6e8);
     border: 3px solid #f06292;
-    padding: 30px 50px;
+    padding: 20px 30px;
     border-radius: 20px;
     text-align: center;
     color: #d81b60;
-    font-size: 1.5em;
+    font-size: clamp(1em, 4vw, 1.5em);
     box-shadow: 0 0 40px rgba(255,192,203,0.6);
     opacity: 0;
     animation: popup 1s ease forwards;
+    z-index: 999;
   }
 
   @keyframes popup {
     from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
     to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+
+  @media (max-height: 600px) {
+    .mala { margin-top: 5px; transform: scale(0.9); }
   }
 </style>
 </head>
@@ -209,7 +221,6 @@
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
 
-  // Background based on time
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 12) document.body.classList.add("morning");
   else if (hour >= 12 && hour < 18) document.body.classList.add("evening");
@@ -220,11 +231,12 @@
     const bead = document.createElement("div");
     bead.classList.add("bead");
     const angle = (i / beadCount) * 2 * Math.PI;
-    const radius = 140;
-    bead.style.left = 165 + radius * Math.cos(angle) - 15 + "px";
-    bead.style.top = 165 + radius * Math.sin(angle) - 15 + "px";
+    const radius = mala.offsetWidth * 0.4;
+    bead.style.left = mala.offsetWidth / 2 + radius * Math.cos(angle) - mala.offsetWidth * 0.04 + "px";
+    bead.style.top = mala.offsetHeight / 2 + radius * Math.sin(angle) - mala.offsetWidth * 0.04 + "px";
     mala.appendChild(bead);
   }
+
   const beads = document.querySelectorAll(".bead");
 
   function updateDisplay() {
@@ -240,7 +252,7 @@
   function celebrateAchievement(level) {
     const popup = document.createElement("div");
     popup.className = "achievement";
-    popup.innerHTML = `🏆 <b>Radhe Radhe!</b><br> You reached <span style="color:#e91e63">${level}</span> Jap! 🌺`;
+    popup.innerHTML = `🏵️ <b>Radhe Radhe!</b><br> You reached <span style="color:#e91e63">${level}</span> Jap! 🌺`;
     document.body.appendChild(popup);
     setTimeout(() => popup.remove(), 4000);
   }
@@ -255,6 +267,7 @@
     bell.currentTime = 0;
     bell.play().catch(()=>{});
     if (navigator.vibrate) navigator.vibrate(70);
+
     countEl.style.transform = "scale(1.2)";
     setTimeout(()=>countEl.style.transform="scale(1)", 150);
 
@@ -269,7 +282,6 @@
       setTimeout(()=>msg.remove(), 3000);
     }
 
-    // 🎉 Achievements
     if ([1000, 2000, 5000].includes(count)) celebrateAchievement(count);
   });
 
@@ -291,28 +303,8 @@
     }
   });
 
-  // 🌸 Voice Recognition (say “Radhe Radhe”)
-  if ('webkitSpeechRecognition' in window) {
-    const recognition = new webkitSpeechRecognition();
-    recognition.continuous = true;
-    recognition.lang = 'hi-IN';
-    recognition.interimResults = false;
-
-    recognition.onresult = (event) => {
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          const spoken = event.results[i][0].transcript.trim();
-          if (spoken.includes("राधे") || spoken.toLowerCase().includes("radhe")) {
-            chantBtn.click();
-          }
-        }
-      }
-    };
-
-    recognition.start();
-  }
-
   updateDisplay();
 </script>
 </body>
 </html>
+
